@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>扫码参与端午知识问答</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:linear-gradient(180deg,#0a1628 0%,#1a3a3a 50%,#0d2b1e 100%);min-height:100vh;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+        .container{text-align:center;max-width:400px}
+        .icon{font-size:60px;margin-bottom:15px;animation:float 3s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        .title{font-size:26px;font-weight:900;color:#FFD700;margin-bottom:8px;text-shadow:0 2px 10px rgba(255,215,0,.3)}
+        .subtitle{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:30px}
+        .qr-wrap{background:#fff;border-radius:20px;padding:25px;display:inline-block;margin-bottom:25px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+        #qrcode{width:200px;height:200px}
+        .tip{background:rgba(255,255,255,.1);border-radius:12px;padding:15px 20px;margin-bottom:20px}
+        .tip-title{font-size:14px;color:#10B981;font-weight:600;margin-bottom:5px}
+        .tip-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.6}
+        .url-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 15px;margin-bottom:15px;word-break:break-all;font-size:12px;color:rgba(255,255,255,.6)}
+        .copy-btn{background:linear-gradient(145deg,#059669 0%,#047857 100%);border:none;border-radius:25px;padding:12px 35px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+        .copy-btn:active{transform:scale(.95)}
+        .brand{margin-top:30px;font-size:13px;color:rgba(255,255,255,.5)}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🐲</div>
+        <h1 class="title">端午知识问答</h1>
+        <p class="subtitle">扫码参与，赢取端午福利</p>
+        
+        <div class="qr-wrap">
+            <div id="qrcode"></div>
+        </div>
+        
+        <div class="tip">
+            <div class="tip-title">📱 参与方式</div>
+            <div class="tip-text">微信扫一扫二维码<br>答对题目即可获得专属兑换码</div>
+        </div>
+        
+        <div class="url-box" id="urlBox">https://qianye991203-crypto.github.io/dragon-boat-quiz/</div>
+        <button class="copy-btn" onclick="copyUrl()">复制链接</button>
+        
+        <p class="brand">创幻云VR亲子剧场</p>
+    </div>
+
+    <script>
+        const url = 'https://qianye991203-crypto.github.io/dragon-boat-quiz/';
+        
+        // 生成二维码
+        new QRCode(document.getElementById('qrcode'), {
+            text: url,
+            width: 200,
+            height: 200,
+            colorDark: '#0a1628',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+        
+        function copyUrl() {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('链接已复制！');
+                });
+            } else {
+                const input = document.createElement('input');
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert('链接已复制！');
+            }
+        }
+    </script>
+</body>
+</html>

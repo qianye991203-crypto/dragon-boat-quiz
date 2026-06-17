@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>端午知识小问答 - 创幻云VR亲子剧场</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:linear-gradient(180deg,#0a1628 0%,#1a3a3a 50%,#0d2b1e 100%);min-height:100vh;color:#fff;overflow-x:hidden}
+        .screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;text-align:center}
+        .screen.active{display:flex}
+        
+        /* 首页 */
+        .home-title{font-size:32px;font-weight:900;color:#FFD700;margin-bottom:10px;text-shadow:0 2px 10px rgba(255,215,0,.3)}
+        .home-subtitle{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:30px}
+        .zongzi-wrap{font-size:80px;margin-bottom:20px;animation:float 3s ease-in-out infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        .start-btn{background:linear-gradient(145deg,#059669 0%,#047857 100%);border:none;border-radius:50px;padding:16px 50px;color:#fff;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(5,150,105,.4);transition:all .2s}
+        .start-btn:active{transform:scale(.95);box-shadow:0 2px 10px rgba(5,150,105,.3)}
+        .brand{margin-top:40px;font-size:13px;color:rgba(255,255,255,.5)}
+        
+        /* 答题页 */
+        .quiz-header{width:100%;max-width:360px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+        .quiz-progress{background:rgba(255,255,255,.1);padding:8px 16px;border-radius:20px;font-size:14px;color:#FFD700}
+        .question-box{width:100%;max-width:360px;background:rgba(255,255,255,.08);border-radius:20px;padding:24px 20px;margin-bottom:20px;border:1px solid rgba(255,255,255,.1)}
+        .question-num{font-size:13px;color:#10B981;margin-bottom:10px}
+        .question-text{font-size:18px;font-weight:600;line-height:1.6;color:#fff}
+        .options{width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
+        .option{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.15);border-radius:16px;padding:16px 20px;cursor:pointer;transition:all .2s;text-align:left;font-size:16px}
+        .option:hover{background:rgba(255,255,255,.1)}
+        .option.correct{background:linear-gradient(145deg,#059669 0%,#047857 100%);border-color:#10B981}
+        .option.wrong{background:linear-gradient(145deg,#dc2626 0%,#991b1b 100%);border-color:#ef4444}
+        .option.disabled{pointer-events:none}
+        
+        /* 结果页 */
+        .result-icon{font-size:100px;margin-bottom:20px}
+        .result-title{font-size:28px;font-weight:900;color:#FFD700;margin-bottom:10px}
+        .result-desc{font-size:16px;color:rgba(255,255,255,.8);margin-bottom:30px;line-height:1.6}
+        .coupon-box{background:linear-gradient(145deg,#FFD700 0%,#FFA500 100%);border-radius:16px;padding:20px;margin-bottom:30px;max-width:340px}
+        .coupon-title{color:#8B4513;font-size:14px;font-weight:600;margin-bottom:8px}
+        .coupon-code{color:#8B4513;font-size:28px;font-weight:900;letter-spacing:2px}
+        .coupon-tip{color:#8B4513;font-size:12px;opacity:.8;margin-top:8px}
+        .restart-btn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);border-radius:50px;padding:14px 40px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s}
+        .restart-btn:active{background:rgba(255,255,255,.2)}
+        
+        /* 装饰 */
+        .decor{position:fixed;pointer-events:none;opacity:.15;font-size:30px;animation:drift 20s linear infinite}
+        @keyframes drift{0%{transform:translateX(-100px) rotate(0deg)}100%{transform:translateX(calc(100vw + 100px)) rotate(360deg)}}
+        .decor:nth-child(1){top:10%;animation-duration:25s}
+        .decor:nth-child(2){top:30%;animation-duration:30s;animation-delay:-5s}
+        .decor:nth-child(3){top:60%;animation-duration:22s;animation-delay:-10s}
+    </style>
+</head>
+<body>
+    <!-- 装饰 -->
+    <div class="decor">🐲</div>
+    <div class="decor">🛶</div>
+    <div class="decor">🎋</div>
+
+    <!-- 首页 -->
+    <div id="homeScreen" class="screen active">
+        <div class="zongzi-wrap">🐲</div>
+        <h1 class="home-title">端午知识小问答</h1>
+        <p class="home-subtitle">答对3题，领取端午专属福利</p>
+        <button class="start-btn" onclick="startQuiz()">开始答题 🎋</button>
+        <p class="brand">创幻云VR亲子剧场</p>
+    </div>
+
+    <!-- 答题页 -->
+    <div id="quizScreen" class="screen">
+        <div class="quiz-header">
+            <span style="font-size:14px;color:rgba(255,255,255,.6)">端午问答</span>
+            <span class="quiz-progress">第 <span id="qNum">1</span>/3 题</span>
+        </div>
+        <div class="question-box">
+            <div class="question-num">QUESTION <span id="qNum2">01</span></div>
+            <div class="question-text" id="qText">题目加载中...</div>
+        </div>
+        <div class="options" id="options"></div>
+    </div>
+
+    <!-- 结果页 -->
+    <div id="resultScreen" class="screen">
+        <div class="result-icon" id="resultIcon">🎉</div>
+        <h2 class="result-title" id="resultTitle">答对啦！</h2>
+        <p class="result-desc" id="resultDesc">恭喜你完成端午知识挑战<br>获得门店专属优惠码</p>
+        <div class="coupon-box">
+            <div class="coupon-title">🎁 端午专属兑换码</div>
+            <div class="coupon-code" id="couponCode">DW2026</div>
+            <div class="coupon-tip">到店出示即可享受端午特别福利</div>
+        </div>
+        <button class="restart-btn" onclick="restart()">再玩一次 ↺</button>
+        <p class="brand">创幻云VR亲子剧场</p>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "端午节是为了纪念哪位历史人物？",
+                options: ["屈原", "李白", "杜甫", "苏轼"],
+                answer: 0
+            },
+            {
+                q: "端午节的传统美食是什么？",
+                options: ["月饼", "粽子", "汤圆", "饺子"],
+                answer: 1
+            },
+            {
+                q: "端午节有哪些传统习俗？",
+                options: ["赏月吃月饼", "赛龙舟、挂艾草", "登高望远", "放鞭炮"],
+                answer: 1
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function $(id) { return document.getElementById(id); }
+
+        function show(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            $(id).classList.add('active');
+        }
+
+        function startQuiz() {
+            currentQ = 0;
+            score = 0;
+            showQuiz();
+        }
+
+        function showQuiz() {
+            show('quizScreen');
+            const q = questions[currentQ];
+            $('qNum').textContent = currentQ + 1;
+            $('qNum2').textContent = '0' + (currentQ + 1);
+            $('qText').textContent = q.q;
+            
+            const opts = $('options');
+            opts.innerHTML = '';
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = ['A','B','C','D'][i] + '. ' + opt;
+                div.onclick = () => selectAnswer(i, div);
+                opts.appendChild(div);
+            });
+        }
+
+        function selectAnswer(idx, el) {
+            const q = questions[currentQ];
+            const opts = document.querySelectorAll('.option');
+            opts.forEach(o => o.classList.add('disabled'));
+            
+            if (idx === q.answer) {
+                el.classList.add('correct');
+                score++;
+            } else {
+                el.classList.add('wrong');
+                opts[q.answer].classList.add('correct');
+            }
+            
+            setTimeout(() => {
+                currentQ++;
+                if (currentQ < questions.length) {
+                    showQuiz();
+                } else {
+                    showResult();
+                }
+            }, 1200);
+        }
+
+        function showResult() {
+            show('resultScreen');
+            if (score >= 2) {
+                $('resultIcon').textContent = '🎉';
+                $('resultTitle').textContent = '答对啦！';
+                $('resultDesc').innerHTML = '恭喜你完成端午知识挑战<br>获得门店专属优惠码';
+                $('couponCode').textContent = 'DW2026VR';
+            } else {
+                $('resultIcon').textContent = '🌿';
+                $('resultTitle').textContent = '继续加油！';
+                $('resultDesc').innerHTML = '答对了 ' + score + ' 题<br>再试一次，领取端午福利';
+                $('couponCode').textContent = '再玩一次';
+            }
+        }
+
+        function restart() {
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
